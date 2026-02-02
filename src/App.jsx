@@ -15,16 +15,14 @@ function App() {
   
   // Control State
   const [steeringAngle, setSteeringAngle] = useState(90) // 0-180, 90 is center
-  const [motorSpeed, setMotorSpeed] = useState(0) // -100 to 100 (negative = reverse)
+  const [motorSpeed, setMotorSpeed] = useState(0) // 0 to 100
   const [accelerometerEnabled, setAccelerometerEnabled] = useState(false)
-  const [accelerometerData, setAccelerometerData] = useState({ x: 0, y: 0, z: 0 })
   
   // Refs for BLE
   const deviceRef = useRef(null)
   const servoCharRef = useRef(null)
   const motorCharRef = useRef(null)
   const throttleIntervalRef = useRef(null)
-  const brakeIntervalRef = useRef(null)
 
   // Connect to BLE device
   const connectBLE = async () => {
@@ -86,14 +84,20 @@ function App() {
   const sendMotorSpeed = useCallback(async (speed) => {
     if (motorCharRef.current && isConnected) {
       try {
-        // Convert -100 to 100 range to 0-200 for unsigned byte
-        const value = new Uint8Array([Math.round(speed + 100)])
+        const value = new Uint8Array([Math.round(speed)])
         await motorCharRef.current.writeValue(value)
       } catch (error) {
         console.error('Motor write error:', error)
       }
     }
   }, [isConnected])
+
+  // Handle steering slider change
+  const handleSteeringChange = (e) => {
+    const angle = parseInt(e.target.value)
+    setSteeringAngle(angle)
+    sendSteeringAngle(angle)
+  }
 
   // Handle accelerometer for steering
   useEffect(() => {
@@ -102,16 +106,8 @@ function App() {
     const handleOrientation = (event) => {
       // gamma is left-right tilt in landscape (-90 to 90)
       const gamma = event.gamma || 0
-      const beta = event.beta || 0
-      
-      setAccelerometerData({ 
-        x: gamma.toFixed(1), 
-        y: beta.toFixed(1), 
-        z: 0 
-      })
       
       // Map gamma (-45 to 45) to servo angle (0 to 180)
-      // Clamping the tilt range for comfortable control
       const clampedGamma = Math.max(-45, Math.min(45, gamma))
       const angle = Math.round(((clampedGamma + 45) / 90) * 180)
       
@@ -155,27 +151,8 @@ function App() {
       clearInterval(throttleIntervalRef.current)
       throttleIntervalRef.current = null
     }
-  }
-
-  // Brake handlers with continuous deceleration
-  const startBrake = () => {
-    if (brakeIntervalRef.current) return
-    brakeIntervalRef.current = setInterval(() => {
-      setMotorSpeed(prev => Math.max(-100, prev - 5))
-    }, 50)
-  }
-
-  const stopBrake = () => {
-    if (brakeIntervalRef.current) {
-      clearInterval(brakeIntervalRef.current)
-      brakeIntervalRef.current = null
-    }
-  }
-
-  // Emergency stop
-  const emergencyStop = () => {
+    // Gradually decrease speed when released
     setMotorSpeed(0)
-    sendMotorSpeed(0)
   }
 
   // Enable accelerometer with permission request
@@ -199,134 +176,112 @@ function App() {
   useEffect(() => {
     return () => {
       stopThrottle()
-      stopBrake()
     }
   }, [])
 
   return (
     <div className="kart-controller">
-      {/* Main Controller UI - Always visible */}
-      <div className="controller-layout">
-          {/* Left Panel - Brake */}
-          <div className="control-panel left-panel">
-            <button
-              className={`pedal-btn brake-btn ${motorSpeed < 0 ? 'active' : ''}`}
-              onTouchStart={startBrake}
-              onTouchEnd={stopBrake}
-              onMouseDown={startBrake}
-              onMouseUp={stopBrake}
-              onMouseLeave={stopBrake}
-            >
-              <span className="pedal-icon">🛑</span>
-              <span className="pedal-label">BRAKE</span>
-            </button>
-          </div>
-
-          {/* Center Panel - Info & Controls */}
-          <div className="center-panel">
-            {/* Top Bar */}
-            <div className="top-bar">
-              {isConnected ? (
-                <div className="device-info">
-                  <span className="status-dot"></span>
-                  <span>{deviceName}</span>
-                </div>
-              ) : (
-                <button 
-                  className="connect-btn-small"
-                  onClick={connectBLE}
-                  disabled={isConnecting}
-                >
-                  {isConnecting ? (
-                    <>
-                      <span className="spinner-small"></span>
-                      <span>Connecting...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="bt-icon-small">📡</span>
-                      <span>Connect</span>
-                    </>
-                  )}
-                </button>
-              )}
-              {isConnected && (
-                <button className="disconnect-btn" onClick={disconnectBLE}>
-                  ✕
-                </button>
-              )}
-              {bleError && (
-                <div className="error-toast">{bleError}</div>
-              )}
+      {/* Main Controller UI */}
+      <div className="controller-layout-simple">
+        
+        {/* Top Bar */}
+        <div className="top-bar">
+          {isConnected ? (
+            <div className="device-info">
+              <span className="status-dot"></span>
+              <span>{deviceName}</span>
             </div>
-
-            {/* Steering Visualization */}
-            <div className="steering-display">
-              <div className="steering-wheel" style={{ transform: `rotate(${steeringAngle - 90}deg)` }}>
-                <div className="wheel-inner">
-                  <div className="wheel-spoke"></div>
-                  <div className="wheel-spoke spoke-2"></div>
-                </div>
-              </div>
-              <div className="steering-value">{steeringAngle}°</div>
-            </div>
-
-            {/* Accelerometer Toggle */}
+          ) : (
             <button 
-              className={`accel-toggle ${accelerometerEnabled ? 'enabled' : ''}`}
-              onClick={accelerometerEnabled ? () => setAccelerometerEnabled(false) : enableAccelerometer}
+              className="connect-btn-small"
+              onClick={connectBLE}
+              disabled={isConnecting}
             >
-              <span className="accel-icon">📱</span>
-              {accelerometerEnabled ? 'TILT STEERING ON' : 'ENABLE TILT STEERING'}
+              {isConnecting ? (
+                <>
+                  <span className="spinner-small"></span>
+                  <span>Connecting...</span>
+                </>
+              ) : (
+                <>
+                  <span className="bt-icon-small">📡</span>
+                  <span>Connect</span>
+                </>
+              )}
             </button>
-
-            {/* Speed Display */}
-            <div className="speed-display">
-              <div className="speed-bar-container">
-                <div 
-                  className={`speed-bar ${motorSpeed < 0 ? 'reverse' : 'forward'}`}
-                  style={{ 
-                    width: `${Math.abs(motorSpeed)}%`,
-                    left: motorSpeed < 0 ? `${50 - Math.abs(motorSpeed) / 2}%` : '50%'
-                  }}
-                ></div>
-                <div className="speed-center-line"></div>
-              </div>
-              <div className="speed-value">
-                {motorSpeed > 0 ? '+' : ''}{motorSpeed}%
-                <span className="speed-label">{motorSpeed < 0 ? 'REV' : motorSpeed > 0 ? 'FWD' : 'STOP'}</span>
-              </div>
-            </div>
-
-            {/* Emergency Stop */}
-            <button className="emergency-btn" onClick={emergencyStop}>
-              STOP
+          )}
+          
+          {/* Tilt Toggle in top bar */}
+          <button 
+            className={`tilt-toggle ${accelerometerEnabled ? 'enabled' : ''}`}
+            onClick={accelerometerEnabled ? () => setAccelerometerEnabled(false) : enableAccelerometer}
+          >
+            📱 {accelerometerEnabled ? 'TILT ON' : 'TILT'}
+          </button>
+          
+          {isConnected && (
+            <button className="disconnect-btn" onClick={disconnectBLE}>
+              ✕
             </button>
+          )}
+          {bleError && (
+            <div className="error-toast">{bleError}</div>
+          )}
+        </div>
 
-            {/* Accelerometer Data (Debug) */}
-            {accelerometerEnabled && (
-              <div className="accel-data">
-                X: {accelerometerData.x}° | Y: {accelerometerData.y}°
-              </div>
-            )}
-          </div>
-
-          {/* Right Panel - Throttle */}
-          <div className="control-panel right-panel">
+        {/* Main Content */}
+        <div className="main-content">
+          {/* Throttle Button - Large on right side */}
+          <div className="throttle-area">
             <button
-              className={`pedal-btn throttle-btn ${motorSpeed > 0 ? 'active' : ''}`}
+              className={`throttle-btn-large ${motorSpeed > 0 ? 'active' : ''}`}
               onTouchStart={startThrottle}
               onTouchEnd={stopThrottle}
               onMouseDown={startThrottle}
               onMouseUp={stopThrottle}
               onMouseLeave={stopThrottle}
             >
-              <span className="pedal-icon">⚡</span>
-              <span className="pedal-label">GAS</span>
+              <span className="throttle-icon">⚡</span>
+              <span className="throttle-label">GAS</span>
+              <span className="throttle-value">{motorSpeed}%</span>
             </button>
           </div>
+
+          {/* Center Info */}
+          <div className="center-info">
+            <div className="steering-wheel-display" style={{ transform: `rotate(${steeringAngle - 90}deg)` }}>
+              <div className="wheel-inner">
+                <div className="wheel-spoke"></div>
+                <div className="wheel-spoke spoke-2"></div>
+              </div>
+            </div>
+            <div className="steering-angle">{steeringAngle}°</div>
+          </div>
         </div>
+
+        {/* Steering Slider - Bottom */}
+        <div className="steering-slider-container">
+          <span className="slider-label left">◀ LEFT</span>
+          <div className="slider-wrapper">
+            <input
+              type="range"
+              min="0"
+              max="180"
+              value={steeringAngle}
+              onChange={handleSteeringChange}
+              className="steering-slider"
+              disabled={accelerometerEnabled}
+            />
+            <div 
+              className="slider-thumb-indicator"
+              style={{ left: `${(steeringAngle / 180) * 100}%` }}
+            ></div>
+          </div>
+          <span className="slider-label right">RIGHT ▶</span>
+        </div>
+        
       </div>
+    </div>
   )
 }
 

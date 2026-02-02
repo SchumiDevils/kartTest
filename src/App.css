@@ -39,8 +39,7 @@ html, body, #root {
   height: 100dvh;
   background: var(--bg-dark);
   background-image: 
-    radial-gradient(ellipse at 20% 50%, rgba(0, 245, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 50%, rgba(255, 45, 122, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
     linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 50%, rgba(0,0,0,0.3) 100%);
   font-family: 'Rajdhani', sans-serif;
   color: var(--text-primary);
@@ -57,237 +56,30 @@ html, body, #root {
   right: 0;
   bottom: 0;
   background-image: 
-    linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(rgba(0, 255, 136, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
   pointer-events: none;
 }
 
-/* ===== CONNECTION OVERLAY ===== */
-.connection-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+/* ===== SIMPLE LAYOUT ===== */
+.controller-layout-simple {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-dark);
-  z-index: 100;
-}
-
-.connection-card {
-  text-align: center;
-  padding: 3rem;
-  background: var(--bg-card);
-  border-radius: 24px;
-  border: 1px solid rgba(0, 245, 255, 0.2);
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  max-width: 90vw;
-  animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.kart-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.connection-card h1 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 2rem;
-  font-weight: 900;
-  letter-spacing: 4px;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.connection-card p {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
-}
-
-.connect-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 1rem 2.5rem;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--bg-dark);
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--glow-cyan);
-}
-
-.connect-btn:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 0 50px rgba(0, 245, 255, 0.7);
-}
-
-.connect-btn:disabled {
-  opacity: 0.7;
-  cursor: wait;
-}
-
-.bt-icon {
-  font-size: 1.3rem;
-}
-
-.spinner {
-  width: 20px;
-  height: 20px;
-  border: 3px solid transparent;
-  border-top-color: var(--bg-dark);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.error-msg {
-  margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  background: rgba(255, 45, 122, 0.15);
-  border: 1px solid var(--accent-pink);
-  border-radius: 8px;
-  color: var(--accent-pink);
-  font-size: 0.9rem;
-}
-
-/* ===== CONTROLLER LAYOUT ===== */
-.controller-layout {
-  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
-  position: relative;
-}
-
-/* Control Panels (Left & Right) */
-.control-panel {
-  flex: 0 0 25%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 1rem;
-}
-
-.left-panel {
-  background: linear-gradient(90deg, rgba(255, 45, 122, 0.1) 0%, transparent 100%);
-}
-
-.right-panel {
-  background: linear-gradient(-90deg, rgba(0, 255, 136, 0.1) 0%, transparent 100%);
-}
-
-/* Pedal Buttons */
-.pedal-btn {
-  width: 100%;
-  height: 80%;
-  max-height: 300px;
-  border-radius: 20px;
-  border: 2px solid;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  transition: all 0.15s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.pedal-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.pedal-icon {
-  font-size: 3rem;
-}
-
-.brake-btn {
-  background: linear-gradient(180deg, #2a1020 0%, #1a0a15 100%);
-  border-color: var(--accent-pink);
-  color: var(--accent-pink);
-  box-shadow: inset 0 0 30px rgba(255, 45, 122, 0.2);
-}
-
-.brake-btn:active,
-.brake-btn.active {
-  background: linear-gradient(180deg, var(--accent-pink) 0%, #aa1050 100%);
-  color: white;
-  box-shadow: var(--glow-pink), inset 0 0 30px rgba(255, 255, 255, 0.2);
-  transform: scale(0.98);
-}
-
-.throttle-btn {
-  background: linear-gradient(180deg, #0a2a1a 0%, #051a10 100%);
-  border-color: var(--accent-green);
-  color: var(--accent-green);
-  box-shadow: inset 0 0 30px rgba(0, 255, 136, 0.2);
-}
-
-.throttle-btn:active,
-.throttle-btn.active {
-  background: linear-gradient(180deg, var(--accent-green) 0%, #00aa55 100%);
-  color: var(--bg-dark);
-  box-shadow: var(--glow-green), inset 0 0 30px rgba(255, 255, 255, 0.2);
-  transform: scale(0.98);
-}
-
-/* Center Panel */
-.center-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
   position: relative;
 }
 
 /* Top Bar */
 .top-bar {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  z-index: 10;
 }
 
 .device-info {
@@ -295,12 +87,12 @@ html, body, #root {
   align-items: center;
   gap: 8px;
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 1px;
   color: var(--accent-cyan);
   background: rgba(0, 245, 255, 0.1);
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 20px;
   border: 1px solid rgba(0, 245, 255, 0.3);
 }
@@ -319,32 +111,14 @@ html, body, #root {
   50% { opacity: 0.5; }
 }
 
-.disconnect-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.disconnect-btn:hover {
-  background: rgba(255, 45, 122, 0.2);
-  border-color: var(--accent-pink);
-  color: var(--accent-pink);
-}
-
 /* Small Connect Button */
 .connect-btn-small {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 1px;
   color: var(--bg-dark);
@@ -379,10 +153,59 @@ html, body, #root {
   animation: spin 0.8s linear infinite;
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Tilt Toggle */
+.tilt-toggle {
+  padding: 0.4rem 0.8rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tilt-toggle:hover {
+  background: rgba(255, 107, 53, 0.1);
+  border-color: var(--accent-orange);
+}
+
+.tilt-toggle.enabled {
+  background: rgba(255, 107, 53, 0.2);
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+  box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+}
+
+.disconnect-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.disconnect-btn:hover {
+  background: rgba(255, 45, 122, 0.2);
+  border-color: var(--accent-pink);
+  color: var(--accent-pink);
+}
+
 /* Error Toast */
 .error-toast {
   position: absolute;
-  top: 50px;
+  top: 60px;
   left: 50%;
   transform: translateX(-50%);
   padding: 0.5rem 1rem;
@@ -401,18 +224,28 @@ html, body, #root {
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* Steering Display */
-.steering-display {
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+/* Center Info */
+.center-info {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
 }
 
-.steering-wheel {
-  width: 100px;
-  height: 100px;
-  border: 4px solid var(--accent-cyan);
+.steering-wheel-display {
+  width: 80px;
+  height: 80px;
+  border: 3px solid var(--accent-cyan);
   border-radius: 50%;
   position: relative;
   transition: transform 0.1s ease-out;
@@ -424,8 +257,8 @@ html, body, #root {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   background: var(--accent-cyan);
   border-radius: 50%;
   box-shadow: 0 0 15px var(--accent-cyan);
@@ -434,9 +267,9 @@ html, body, #root {
 .wheel-spoke {
   position: absolute;
   top: 50%;
-  left: 4px;
-  right: 4px;
-  height: 4px;
+  left: 3px;
+  right: 3px;
+  height: 3px;
   background: var(--accent-cyan);
   transform: translateY(-50%);
   border-radius: 2px;
@@ -446,240 +279,239 @@ html, body, #root {
   transform: translateY(-50%) rotate(90deg);
   left: 50%;
   right: auto;
-  width: calc(100% - 8px);
-  margin-left: calc(-50% + 4px);
+  width: calc(100% - 6px);
+  margin-left: calc(-50% + 3px);
 }
 
-.steering-value {
+.steering-angle {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--accent-cyan);
   text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
 }
 
-/* Accelerometer Toggle */
-.accel-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0.6rem 1.2rem;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 25px;
-  color: var(--text-secondary);
+/* Throttle Area */
+.throttle-area {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 70%;
+}
+
+.throttle-btn-large {
+  width: 120px;
+  height: 100%;
+  border-radius: 20px;
+  border: 2px solid var(--accent-green);
+  background: linear-gradient(180deg, #0a2a1a 0%, #051a10 100%);
+  color: var(--accent-green);
+  font-family: 'Orbitron', sans-serif;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.accel-toggle:hover {
-  background: rgba(255, 107, 53, 0.1);
-  border-color: var(--accent-orange);
-}
-
-.accel-toggle.enabled {
-  background: rgba(255, 107, 53, 0.2);
-  border-color: var(--accent-orange);
-  color: var(--accent-orange);
-  box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-}
-
-.accel-icon {
-  font-size: 1.2rem;
-}
-
-/* Speed Display */
-.speed-display {
-  width: 100%;
-  max-width: 300px;
-}
-
-.speed-bar-container {
-  width: 100%;
-  height: 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.15s ease;
+  box-shadow: inset 0 0 30px rgba(0, 255, 136, 0.2);
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.speed-bar {
-  position: absolute;
-  top: 2px;
-  bottom: 2px;
-  border-radius: 6px;
-  transition: all 0.1s ease-out;
-}
-
-.speed-bar.forward {
-  background: linear-gradient(90deg, var(--accent-green), #00cc66);
-  box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
-}
-
-.speed-bar.reverse {
-  background: linear-gradient(90deg, #cc1050, var(--accent-pink));
-  box-shadow: 0 0 15px rgba(255, 45, 122, 0.5);
-}
-
-.speed-center-line {
+.throttle-btn-large::before {
+  content: '';
   position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
   bottom: 0;
-  left: 50%;
-  width: 2px;
-  background: rgba(255, 255, 255, 0.5);
-  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+  pointer-events: none;
 }
 
-.speed-value {
-  text-align: center;
-  margin-top: 0.5rem;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.8rem;
+.throttle-btn-large:active,
+.throttle-btn-large.active {
+  background: linear-gradient(180deg, var(--accent-green) 0%, #00aa55 100%);
+  color: var(--bg-dark);
+  box-shadow: var(--glow-green), inset 0 0 30px rgba(255, 255, 255, 0.2);
+  transform: scale(0.98);
+}
+
+.throttle-icon {
+  font-size: 2.5rem;
+}
+
+.throttle-label {
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--text-primary);
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 8px;
-}
-
-.speed-label {
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--text-secondary);
   letter-spacing: 2px;
 }
 
-/* Emergency Stop */
-.emergency-btn {
-  padding: 0.5rem 2rem;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.9rem;
+.throttle-value {
+  font-size: 1.2rem;
   font-weight: 700;
-  letter-spacing: 3px;
-  background: transparent;
-  border: 2px solid rgba(255, 45, 122, 0.5);
-  border-radius: 8px;
-  color: var(--accent-pink);
-  cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.emergency-btn:hover {
-  background: var(--accent-pink);
-  color: white;
-  box-shadow: var(--glow-pink);
+/* ===== STEERING SLIDER ===== */
+.steering-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  padding-right: 140px; /* Space for throttle button */
 }
 
-/* Accelerometer Data Debug */
-.accel-data {
+.slider-label {
   font-family: 'Orbitron', sans-serif;
   font-size: 0.7rem;
-  color: var(--text-secondary);
+  font-weight: 600;
   letter-spacing: 1px;
+  color: var(--text-secondary);
+  white-space: nowrap;
 }
 
-/* ===== RESPONSIVE - Portrait Warning ===== */
+.slider-wrapper {
+  flex: 1;
+  position: relative;
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.steering-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: linear-gradient(90deg, 
+    var(--accent-cyan) 0%, 
+    rgba(255,255,255,0.1) 45%, 
+    rgba(255,255,255,0.2) 50%, 
+    rgba(255,255,255,0.1) 55%, 
+    var(--accent-cyan) 100%
+  );
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  border: 1px solid rgba(0, 245, 255, 0.3);
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.steering-slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Slider Thumb */
+.steering-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(180deg, #ffffff 0%, #cccccc 100%);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 
+    0 0 20px rgba(0, 245, 255, 0.5),
+    0 4px 15px rgba(0,0,0,0.4),
+    inset 0 2px 5px rgba(255,255,255,0.8);
+  border: 3px solid var(--accent-cyan);
+  transition: transform 0.1s ease;
+}
+
+.steering-slider::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+  box-shadow: 
+    0 0 30px rgba(0, 245, 255, 0.8),
+    0 4px 15px rgba(0,0,0,0.4),
+    inset 0 2px 5px rgba(255,255,255,0.8);
+}
+
+.steering-slider::-moz-range-thumb {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(180deg, #ffffff 0%, #cccccc 100%);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 
+    0 0 20px rgba(0, 245, 255, 0.5),
+    0 4px 15px rgba(0,0,0,0.4);
+  border: 3px solid var(--accent-cyan);
+}
+
+/* Center marker on slider */
+.slider-wrapper::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 30px;
+  background: var(--accent-orange);
+  border-radius: 2px;
+  box-shadow: 0 0 10px var(--accent-orange);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ===== RESPONSIVE ===== */
 @media (orientation: portrait) {
-  .controller-layout {
-    display: none;
-  }
-  
-  .kart-controller::after {
-    content: '📱 Please rotate your device to landscape mode';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  .controller-layout-simple::after {
+    content: '📱 Please rotate to landscape';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: 'Orbitron', sans-serif;
     font-size: 1.2rem;
-    text-align: center;
     color: var(--accent-orange);
-    padding: 2rem;
-    background: var(--bg-card);
-    border-radius: 16px;
-    border: 1px solid var(--accent-orange);
-    animation: rotateHint 2s ease-in-out infinite;
-  }
-  
-  @keyframes rotateHint {
-    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
-    25% { transform: translate(-50%, -50%) rotate(-10deg); }
-    75% { transform: translate(-50%, -50%) rotate(10deg); }
+    z-index: 1000;
   }
 }
 
-/* Small screens in landscape */
 @media (max-height: 400px) {
-  .steering-wheel {
-    width: 70px;
-    height: 70px;
+  .steering-wheel-display {
+    width: 60px;
+    height: 60px;
   }
   
-  .steering-value {
-    font-size: 1rem;
+  .steering-angle {
+    font-size: 1.2rem;
   }
   
-  .speed-value {
-    font-size: 1.4rem;
+  .throttle-btn-large {
+    width: 100px;
   }
   
-  .pedal-icon {
+  .throttle-icon {
     font-size: 2rem;
   }
   
-  .pedal-label {
-    font-size: 0.9rem;
-  }
-  
-  .accel-toggle {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.75rem;
+  .steering-slider-container {
+    padding-right: 120px;
   }
 }
 
-/* Very small landscape screens */
 @media (max-height: 320px) {
-  .steering-display {
+  .center-info {
     display: none;
   }
   
-  .top-bar {
-    position: absolute;
-    top: 0.5rem;
-    left: 1rem;
-    right: 1rem;
+  .steering-slider::-webkit-slider-thumb {
+    width: 35px;
+    height: 35px;
   }
 }
 
-/* Larger tablets */
-@media (min-width: 1024px) and (orientation: landscape) {
-  .control-panel {
-    flex: 0 0 30%;
-  }
-  
-  .pedal-btn {
-    max-width: 250px;
-    max-height: 350px;
-  }
-  
-  .steering-wheel {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .speed-display {
-    max-width: 400px;
-  }
-}
-
-/* Prevent scrolling and bouncing on iOS */
+/* Prevent scrolling on iOS */
 body {
   position: fixed;
   width: 100%;
