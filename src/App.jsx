@@ -205,42 +205,8 @@ function App() {
 
   return (
     <div className="kart-controller">
-      {/* Connection Overlay */}
-      {!isConnected && (
-        <div className="connection-overlay">
-          <div className="connection-card">
-            <div className="kart-icon">🏎️</div>
-            <h1>KART CONTROLLER</h1>
-            <p>Connect to your kart via Bluetooth</p>
-            
-            <button 
-              className="connect-btn"
-              onClick={connectBLE}
-              disabled={isConnecting}
-            >
-              {isConnecting ? (
-                <>
-                  <span className="spinner"></span>
-                  Connecting...
-                </>
-              ) : (
-                <>
-                  <span className="bt-icon">⚡</span>
-                  Connect BLE
-                </>
-              )}
-            </button>
-            
-            {bleError && (
-              <div className="error-msg">{bleError}</div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Main Controller UI */}
-      {isConnected && (
-        <div className="controller-layout">
+      {/* Main Controller UI - Always visible */}
+      <div className="controller-layout">
           {/* Left Panel - Brake */}
           <div className="control-panel left-panel">
             <button
@@ -260,13 +226,38 @@ function App() {
           <div className="center-panel">
             {/* Top Bar */}
             <div className="top-bar">
-              <div className="device-info">
-                <span className="status-dot"></span>
-                <span>{deviceName}</span>
-              </div>
-              <button className="disconnect-btn" onClick={disconnectBLE}>
-                ✕
-              </button>
+              {isConnected ? (
+                <div className="device-info">
+                  <span className="status-dot"></span>
+                  <span>{deviceName}</span>
+                </div>
+              ) : (
+                <button 
+                  className="connect-btn-small"
+                  onClick={connectBLE}
+                  disabled={isConnecting}
+                >
+                  {isConnecting ? (
+                    <>
+                      <span className="spinner-small"></span>
+                      <span>Connecting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="bt-icon-small">📡</span>
+                      <span>Connect</span>
+                    </>
+                  )}
+                </button>
+              )}
+              {isConnected && (
+                <button className="disconnect-btn" onClick={disconnectBLE}>
+                  ✕
+                </button>
+              )}
+              {bleError && (
+                <div className="error-toast">{bleError}</div>
+              )}
             </div>
 
             {/* Steering Visualization */}
@@ -335,8 +326,7 @@ function App() {
             </button>
           </div>
         </div>
-      )}
-    </div>
+      </div>
   )
 }
 

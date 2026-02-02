@@ -337,6 +337,70 @@ html, body, #root {
   color: var(--accent-pink);
 }
 
+/* Small Connect Button */
+.connect-btn-small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem 1rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--bg-dark);
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(0, 245, 255, 0.4);
+}
+
+.connect-btn-small:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+}
+
+.connect-btn-small:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.bt-icon-small {
+  font-size: 1rem;
+}
+
+.spinner-small {
+  width: 14px;
+  height: 14px;
+  border: 2px solid transparent;
+  border-top-color: var(--bg-dark);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Error Toast */
+.error-toast {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 1rem;
+  background: rgba(255, 45, 122, 0.9);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  animation: slideDown 0.3s ease;
+  z-index: 100;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
 /* Steering Display */
 .steering-display {
   display: flex;
