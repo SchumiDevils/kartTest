@@ -1,14 +1,624 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Kart Controller - Mobile Landscape Optimized */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+:root {
+  --bg-dark: #0a0a0f;
+  --bg-card: #12121a;
+  --accent-cyan: #00f5ff;
+  --accent-pink: #ff2d7a;
+  --accent-orange: #ff6b35;
+  --accent-green: #00ff88;
+  --text-primary: #ffffff;
+  --text-secondary: #8888aa;
+  --glow-cyan: 0 0 30px rgba(0, 245, 255, 0.5);
+  --glow-pink: 0 0 30px rgba(255, 45, 122, 0.5);
+  --glow-orange: 0 0 30px rgba(255, 107, 53, 0.5);
+  --glow-green: 0 0 30px rgba(0, 255, 136, 0.5);
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-dark);
+}
+
+.kart-controller {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--bg-dark);
+  background-image: 
+    radial-gradient(ellipse at 20% 50%, rgba(0, 245, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(255, 45, 122, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 50%, rgba(0,0,0,0.3) 100%);
+  font-family: 'Rajdhani', sans-serif;
+  color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Grid pattern overlay */
+.kart-controller::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* ===== CONNECTION OVERLAY ===== */
+.connection-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-dark);
+  z-index: 100;
+}
+
+.connection-card {
   text-align: center;
+  padding: 3rem;
+  background: var(--bg-card);
+  border-radius: 24px;
+  border: 1px solid rgba(0, 245, 255, 0.2);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  max-width: 90vw;
+  animation: fadeIn 0.5s ease;
 }
 
-.card {
-  padding: 2em;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.read-the-docs {
-  color: #888;
+.kart-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.connection-card h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.connection-card p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.connect-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem 2.5rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--bg-dark);
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--glow-cyan);
+}
+
+.connect-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 0 50px rgba(0, 245, 255, 0.7);
+}
+
+.connect-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.bt-icon {
+  font-size: 1.3rem;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid transparent;
+  border-top-color: var(--bg-dark);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-msg {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 45, 122, 0.15);
+  border: 1px solid var(--accent-pink);
+  border-radius: 8px;
+  color: var(--accent-pink);
+  font-size: 0.9rem;
+}
+
+/* ===== CONTROLLER LAYOUT ===== */
+.controller-layout {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Control Panels (Left & Right) */
+.control-panel {
+  flex: 0 0 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.left-panel {
+  background: linear-gradient(90deg, rgba(255, 45, 122, 0.1) 0%, transparent 100%);
+}
+
+.right-panel {
+  background: linear-gradient(-90deg, rgba(0, 255, 136, 0.1) 0%, transparent 100%);
+}
+
+/* Pedal Buttons */
+.pedal-btn {
+  width: 100%;
+  height: 80%;
+  max-height: 300px;
+  border-radius: 20px;
+  border: 2px solid;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.pedal-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.pedal-icon {
+  font-size: 3rem;
+}
+
+.brake-btn {
+  background: linear-gradient(180deg, #2a1020 0%, #1a0a15 100%);
+  border-color: var(--accent-pink);
+  color: var(--accent-pink);
+  box-shadow: inset 0 0 30px rgba(255, 45, 122, 0.2);
+}
+
+.brake-btn:active,
+.brake-btn.active {
+  background: linear-gradient(180deg, var(--accent-pink) 0%, #aa1050 100%);
+  color: white;
+  box-shadow: var(--glow-pink), inset 0 0 30px rgba(255, 255, 255, 0.2);
+  transform: scale(0.98);
+}
+
+.throttle-btn {
+  background: linear-gradient(180deg, #0a2a1a 0%, #051a10 100%);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  box-shadow: inset 0 0 30px rgba(0, 255, 136, 0.2);
+}
+
+.throttle-btn:active,
+.throttle-btn.active {
+  background: linear-gradient(180deg, var(--accent-green) 0%, #00aa55 100%);
+  color: var(--bg-dark);
+  box-shadow: var(--glow-green), inset 0 0 30px rgba(255, 255, 255, 0.2);
+  transform: scale(0.98);
+}
+
+/* Center Panel */
+.center-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  position: relative;
+}
+
+/* Top Bar */
+.top-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.device-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--accent-cyan);
+  background: rgba(0, 245, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 245, 255, 0.3);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent-green);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent-green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.disconnect-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.disconnect-btn:hover {
+  background: rgba(255, 45, 122, 0.2);
+  border-color: var(--accent-pink);
+  color: var(--accent-pink);
+}
+
+/* Steering Display */
+.steering-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.steering-wheel {
+  width: 100px;
+  height: 100px;
+  border: 4px solid var(--accent-cyan);
+  border-radius: 50%;
+  position: relative;
+  transition: transform 0.1s ease-out;
+  box-shadow: var(--glow-cyan), inset 0 0 20px rgba(0, 245, 255, 0.2);
+}
+
+.wheel-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  background: var(--accent-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--accent-cyan);
+}
+
+.wheel-spoke {
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  right: 4px;
+  height: 4px;
+  background: var(--accent-cyan);
+  transform: translateY(-50%);
+  border-radius: 2px;
+}
+
+.wheel-spoke.spoke-2 {
+  transform: translateY(-50%) rotate(90deg);
+  left: 50%;
+  right: auto;
+  width: calc(100% - 8px);
+  margin-left: calc(-50% + 4px);
+}
+
+.steering-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+}
+
+/* Accelerometer Toggle */
+.accel-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.6rem 1.2rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.accel-toggle:hover {
+  background: rgba(255, 107, 53, 0.1);
+  border-color: var(--accent-orange);
+}
+
+.accel-toggle.enabled {
+  background: rgba(255, 107, 53, 0.2);
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+}
+
+.accel-icon {
+  font-size: 1.2rem;
+}
+
+/* Speed Display */
+.speed-display {
+  width: 100%;
+  max-width: 300px;
+}
+
+.speed-bar-container {
+  width: 100%;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.speed-bar {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 6px;
+  transition: all 0.1s ease-out;
+}
+
+.speed-bar.forward {
+  background: linear-gradient(90deg, var(--accent-green), #00cc66);
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+}
+
+.speed-bar.reverse {
+  background: linear-gradient(90deg, #cc1050, var(--accent-pink));
+  box-shadow: 0 0 15px rgba(255, 45, 122, 0.5);
+}
+
+.speed-center-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateX(-50%);
+}
+
+.speed-value {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+}
+
+.speed-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+}
+
+/* Emergency Stop */
+.emergency-btn {
+  padding: 0.5rem 2rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  background: transparent;
+  border: 2px solid rgba(255, 45, 122, 0.5);
+  border-radius: 8px;
+  color: var(--accent-pink);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.emergency-btn:hover {
+  background: var(--accent-pink);
+  color: white;
+  box-shadow: var(--glow-pink);
+}
+
+/* Accelerometer Data Debug */
+.accel-data {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+}
+
+/* ===== RESPONSIVE - Portrait Warning ===== */
+@media (orientation: portrait) {
+  .controller-layout {
+    display: none;
+  }
+  
+  .kart-controller::after {
+    content: '📱 Please rotate your device to landscape mode';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    text-align: center;
+    color: var(--accent-orange);
+    padding: 2rem;
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--accent-orange);
+    animation: rotateHint 2s ease-in-out infinite;
+  }
+  
+  @keyframes rotateHint {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    25% { transform: translate(-50%, -50%) rotate(-10deg); }
+    75% { transform: translate(-50%, -50%) rotate(10deg); }
+  }
+}
+
+/* Small screens in landscape */
+@media (max-height: 400px) {
+  .steering-wheel {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .steering-value {
+    font-size: 1rem;
+  }
+  
+  .speed-value {
+    font-size: 1.4rem;
+  }
+  
+  .pedal-icon {
+    font-size: 2rem;
+  }
+  
+  .pedal-label {
+    font-size: 0.9rem;
+  }
+  
+  .accel-toggle {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Very small landscape screens */
+@media (max-height: 320px) {
+  .steering-display {
+    display: none;
+  }
+  
+  .top-bar {
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+    right: 1rem;
+  }
+}
+
+/* Larger tablets */
+@media (min-width: 1024px) and (orientation: landscape) {
+  .control-panel {
+    flex: 0 0 30%;
+  }
+  
+  .pedal-btn {
+    max-width: 250px;
+    max-height: 350px;
+  }
+  
+  .steering-wheel {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .speed-display {
+    max-width: 400px;
+  }
+}
+
+/* Prevent scrolling and bouncing on iOS */
+body {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
